@@ -27,9 +27,14 @@ CSNGWTImporter >> factoryClass [
 
 { #category : #api }
 CSNGWTImporter >> generatePage [
-	self sourceModel allModelClasses
+	self sourceModel allModelClasses asOrderedCollection
 		select: [ :class | class superclassHierarchyGroup anySatisfy: [ :superClass | superClass name = 'EntryPoint' ] ]
 		thenDo: [ :phaseClass | self factory createPage: phaseClass ]
+]
+
+{ #category : #api }
+CSNGWTImporter >> generateWidgetOfPage: aPage [
+	
 ]
 
 { #category : #api }
