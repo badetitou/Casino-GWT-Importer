@@ -1,7 +1,7 @@
 Class {
 	#name : #CSNGWTFactory,
 	#superclass : #CSNWidgetFactory,
-	#category : #'Casino-Model-Importer-GWT'
+	#category : #'Casino-GWT-Importer'
 }
 
 { #category : #'as yet unclassified' }

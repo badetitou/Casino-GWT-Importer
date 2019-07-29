@@ -4,7 +4,7 @@ CSNGWTImporter new sourceModel: sourceModel; createModelIn: htmltModel
 Class {
 	#name : #CSNGWTImporter,
 	#superclass : #CSNWebModel,
-	#category : #'Casino-Model-Importer-GWT'
+	#category : #'Casino-GWT-Importer'
 }
 
 { #category : #api }
