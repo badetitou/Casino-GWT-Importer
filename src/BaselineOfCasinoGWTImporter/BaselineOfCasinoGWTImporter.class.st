@@ -20,7 +20,11 @@ BaselineOfCasinoGWTImporter >> defineDependencies: spec [
 		baseline: 'Casino'
 		with: [ spec
 				loads: 'core-extented';
-				repository: 'github://badetitou/Casino:master/src' ]
+				repository: 'github://badetitou/Casino:master/src' ].
+	spec
+		baseline: 'CasinoHTMLImporter'
+		with: [ spec
+				repository: 'github://badetitou/Casino-HTML-Importer:master/src' ]
 ]
 
 { #category : #baselines }
@@ -32,5 +36,5 @@ BaselineOfCasinoGWTImporter >> defineGroups: spec [
 BaselineOfCasinoGWTImporter >> definePackages: spec [
 	spec
 		package: 'BaselineOfCasinoGWTImporter';
-		package: 'Casino-GWT-Importer' with: [ spec requires: #('Casino') ]
+		package: 'Casino-GWT-Importer' with: [ spec requires: #('Casino' 'CasinoHTMLImporter') ]
 ]
