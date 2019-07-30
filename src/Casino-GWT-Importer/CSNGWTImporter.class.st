@@ -25,17 +25,10 @@ CSNGWTImporter >> addWidgetDefaultAttributes [
 
 { #category : #'private - generateWidget' }
 CSNGWTImporter >> computeWidgetCreation [
-	(self widgetAnonymousSubclasses, self widgetConstructorsInvocation)
-		do: [ :invocation | 
-			| widget |
-			widget := self factory createWidgetFor: invocation.
-			widget affectedActions: invocation affectation.
-			(widget affectedActions isNotNil and: [ widget affectedActions isInvocation not ]) ifTrue: [ widget name: widget affectedActions name ] ]
-		displayingProgress: [ :invoc | 'Generate widget : ' , invoc asString ]
-		every: 100
+	^ (self widgetAnonymousSubclasses, self widgetConstructorsInvocation)
 ]
 
-{ #category : #api }
+{ #category : #initialization }
 CSNGWTImporter >> factoryClass [
 	^ CSNGWTFactory
 ]
@@ -49,8 +42,32 @@ CSNGWTImporter >> generatePage [
 
 { #category : #api }
 CSNGWTImporter >> generateWidgets [
-	| potentialWidgets |
-	potentialWidgets := (self computeWidgetCreation).
+	"2 steps
+1. create the UiBinder widgets -> classes that extend UiBinder
+2. Determine the other widgets"
+
+	"STEP 1"
+
+	self sourceModel allModelClasses 
+		select: [ :class | class superclassHierarchy anySatisfy: [ :superclass | superclass name = 'UiBinder' ] ] 
+		thenDo: [ :classWithXmlUI | self generateXMLUiForXLMUiBinder: (classWithXmlUI typeContainer)].
+
+
+	"STEP 2"
+	self computeWidgetCreation
+		do: [ :invocation | 
+			| widget |
+			widget := self factory createWidgetFor: invocation.
+			widget affectedActions: invocation affectation.
+			(widget affectedActions isNotNil and: [ widget affectedActions isInvocation not ]) ifTrue: [ widget name: widget affectedActions name ] ]
+		displayingProgress: [ :invoc | 'Generate widget : ' , invoc asString ]
+		every: 100
+]
+
+{ #category : #'private - generateWidget' }
+CSNGWTImporter >> generateXMLUiForXLMUiBinder: classWithXmlUI [
+	classWithXmlUI sourceAnchor fileReference parent files select: [ :file | file basename = ((classWithXmlUI name), '.ui.xml') ].
+	1halt. 
 ]
 
 { #category : #api }
