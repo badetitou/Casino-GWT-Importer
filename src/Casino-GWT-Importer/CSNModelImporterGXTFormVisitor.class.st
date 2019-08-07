@@ -37,6 +37,13 @@ CSNModelImporterGXTFormVisitor >> visit: anElement [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTFormVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
+	^ source name = (self prefix , 'FieldSet')
+		ifTrue: [ self createWidget: aCSNUIFieldset for: source ]
+		ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUIInput: aCSNUIInput [
 	^ source name = (self prefix , 'FieldLabel')
 		ifTrue: [ | label realInput |

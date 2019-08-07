@@ -35,6 +35,11 @@ CSNModelImporterGXTContainerVisitor >> visit: anElement [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTContainerVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
+	^ nil
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTContainerVisitor >> visitCSNUIPanel: aCSNUIPanel [
 	^ (source name = (self prefix, 'VerticalLayoutContainer')) ifTrue: [ | panel | 
 		panel := self createWidget: aCSNUIPanel for: source.
