@@ -29,6 +29,22 @@ CSNGWTImporter >> computeWidgetCreation [
 ]
 
 { #category : #initialization }
+CSNGWTImporter >> createFactory [
+	factory := self factoryClass new
+		model: model;
+		importer: self;
+		addVisitorImporter: CSNModelImporterHTMLVisitor new;
+		addVisitorImporter: CSNModelImporterGWTClientVisitor new;
+		addVisitorImporter: CSNModelImporterGWTUIBinderVisitor new;
+		addVisitorImporter: CSNModelImporterGXTButtonVisitor new;
+		addVisitorImporter: CSNModelImporterGXTClientVisitor new;
+		addVisitorImporter: CSNModelImporterGXTContainerVisitor new;
+		addVisitorImporter: CSNModelImporterGXTFormVisitor new;
+		addVisitorImporter: CSNModelImporterGXTGridVisitor new;
+		yourself
+]
+
+{ #category : #initialization }
 CSNGWTImporter >> factoryClass [
 	^ CSNGWTFactory
 ]
@@ -52,22 +68,29 @@ CSNGWTImporter >> generateWidgets [
 		select: [ :class | class superclassHierarchy anySatisfy: [ :superclass | superclass name = 'UiBinder' ] ] 
 		thenDo: [ :classWithXmlUI | self generateXMLUiForXLMUiBinder: (classWithXmlUI typeContainer)].
 
-
 	"STEP 2"
-	self computeWidgetCreation
+	"self computeWidgetCreation
 		do: [ :invocation | 
 			| widget |
 			widget := self factory createWidgetFor: invocation.
 			widget affectedActions: invocation affectation.
 			(widget affectedActions isNotNil and: [ widget affectedActions isInvocation not ]) ifTrue: [ widget name: widget affectedActions name ] ]
 		displayingProgress: [ :invoc | 'Generate widget : ' , invoc asString ]
-		every: 100
+		every: 100"
 ]
 
 { #category : #'private - generateWidget' }
 CSNGWTImporter >> generateXMLUiForXLMUiBinder: classWithXmlUI [
-	classWithXmlUI sourceAnchor fileReference parent files select: [ :file | file basename = ((classWithXmlUI name), '.ui.xml') ].
-	1halt. 
+	| visitor xmlModel |
+	visitor := CSNXMLGWTVisitor new
+		importer: self;
+		factory: self factory;
+		yourself.
+	classWithXmlUI sourceAnchor fileReference parent files
+		select: [ :file | file basename = (classWithXmlUI name , '.ui.xml') ]
+		thenDo: [ :file | 
+			xmlModel := (XMLDOMParser on: file readStream) isValidating: false; parseDocument.
+			xmlModel acceptNodeVisitor: visitor ]
 ]
 
 { #category : #api }

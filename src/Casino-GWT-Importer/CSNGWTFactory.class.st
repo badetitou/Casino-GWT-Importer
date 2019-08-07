@@ -5,11 +5,16 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
+CSNGWTFactory >> createAttributesFor: widget from: anElement [
+	anElement attributeNodesDo: [ :attribute | self createAttributeFor: widget from: attribute ]
+]
+
+{ #category : #'as yet unclassified' }
 CSNGWTFactory >> createPage: thePageSource [
 	(self create: CSNPage) source: thePageSource
 ]
 
 { #category : #'as yet unclassified' }
 CSNGWTFactory >> createWidgetFor: theWidgetSource [
-	^ model add: ((CSNWidget newFor: theWidgetSource) source: theWidgetSource; yourself)
+	^ self createWidgetFor: theWidgetSource withParent: nil 
 ]
