@@ -43,11 +43,20 @@ CSNModelImporterGWTUIBinderVisitor >> visitCSNAttribute: anElement [
 { #category : #visitor }
 CSNModelImporterGWTUIBinderVisitor >> visitField: anElement [
 	"create the link witht the attribute in the class
-	must return nil because we do not really want to create an attribute"
+	must return nil because we do not really want to create an attribute
+	
+1. get the class where the element should be
+2. check if it corresponds to a real attribute
+3. check if there are @UiHandler('name of the element') for this element and add them as sources"
 
-	| javaAttribute |
-	javaAttribute := self factory importer xmlImporter correspondingClass attributes detect: [ :attribute | attribute name = source value ] ifNone: [ 1 halt ].
-	^ entity
-		affectedActions: javaAttribute;
-		addSource: javaAttribute
+	| javaAttribute correspondingClass |
+	"1. get the class"
+	correspondingClass := self factory importer xmlImporter correspondingClass.
+	"2. check attributes"
+	javaAttribute := correspondingClass attributes detect: [ :attribute | attribute name = source value ] ifOne: [ :attribute | entity addSource: attribute ] ifNone: [ nil ].
+	"3. Check the UiHandler"
+	(correspondingClass allToScope: FamixTAnnotationInstance)
+		select: [ :annotationInstance | annotationInstance annotationType name = 'UiHandler' and: [ annotationInstance attributes anyOne value = source value ] ]
+		thenDo: [ :handler | entity addSource: handler ].
+	^ entity affectedActions: javaAttribute
 ]
