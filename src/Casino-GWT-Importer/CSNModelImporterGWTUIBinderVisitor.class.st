@@ -44,5 +44,10 @@ CSNModelImporterGWTUIBinderVisitor >> visitCSNAttribute: anElement [
 CSNModelImporterGWTUIBinderVisitor >> visitField: anElement [
 	"create the link witht the attribute in the class
 	must return nil because we do not really want to create an attribute"
-	^ entity affectedActions: (self factory importer xmlImporter correspondingClass attributes detect: [:attribute | attribute name = source value] ifNone: [ nil ] )
+
+	| javaAttribute |
+	javaAttribute := self factory importer xmlImporter correspondingClass attributes detect: [ :attribute | attribute name = source value ] ifNone: [ 1 halt ].
+	^ entity
+		affectedActions: javaAttribute;
+		addSource: javaAttribute
 ]
