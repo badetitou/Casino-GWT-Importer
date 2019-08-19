@@ -109,6 +109,18 @@ CSNGWTImporter >> import [
 
 { #category : #'private - linkWidget' }
 CSNGWTImporter >> linkWidget: aWidget [
+	"Link a widget with its parent if possible.
+In java, the widget must exist in a structural entity"
+
+	"1. Check the widget has an affected actions (so it has a variable in java)"
+
+	aWidget affectedActions ifNil: [ ^ nil ].
+	"Check if I am a parameter of the add() method. If yes, my parent is the widget that call me"
+	(aWidget affectedActions fastAccesses
+		collect: #parentNode
+		thenSelect:
+			[ :parentNode | (parentNode isKindOf: FASTJavaMethodInvocation) and: [ parentNode name = 'add' and: [ parentNode receiver isNotNil and: [ (parentNode receiver isKindOf: FASTJavaMethodInvocation) not ] ] ] ])
+		do: [ :parentNodeMethodInvocation | (self widgetsWithAffectedAction: parentNodeMethodInvocation receiver famixVariable) do: [ :parent | parent addWidget: aWidget ] ]
 ]
 
 { #category : #'private - generateWidget' }
@@ -132,6 +144,11 @@ CSNGWTImporter >> widgetConstructorsInvocation [
 					method isConstructor
 						or: [ (method name copyReplaceAll: '.' with: '::') asSymbol = method parentType mooseName  ] ]
 				thenCollect: #incomingInvocations ]) flattened
+]
+
+{ #category : #'private - linkWidget' }
+CSNGWTImporter >> widgetsWithAffectedAction: affectedAction [
+	 ^ (self model allWithSubTypesOf: CSNWidget) select: [ :widget | widget affectedActions = affectedAction ].
 ]
 
 { #category : #accessing }

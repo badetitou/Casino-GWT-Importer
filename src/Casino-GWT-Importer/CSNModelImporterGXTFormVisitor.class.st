@@ -9,6 +9,11 @@ Class {
 	#category : #'Casino-GWT-Importer-Importers'
 }
 
+{ #category : #visitor }
+CSNModelImporterGXTFormVisitor >> computeAttributeValueOf: label [
+	label attributeValue: (label source attributeAt: 'text')
+]
+
 { #category : #'instance creation' }
 CSNModelImporterGXTFormVisitor >> createAttribute: aAttributeClass for: attributeElement [
 	^ (self create: aAttributeClass)
@@ -48,7 +53,8 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
 CSNModelImporterGXTFormVisitor >> visitCSNUIInput: aCSNUIInput [
 	^ source name = (self prefix , 'FieldLabel')
 		ifTrue: [ | label realInput |
-			label := self create: CSNUILabel.
+			label := self create: CSNUILabel fromSource: source.
+			self computeAttributeValueOf: label.
 			realInput := self factory createWidgetFor: source descendantElements last withParent: nil.
 			realInput addAttribute: label.
 			realInput ]

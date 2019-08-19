@@ -11,7 +11,7 @@ CSNGWTFactory >> createAttributesFor: widget from: anElement [
 
 { #category : #'as yet unclassified' }
 CSNGWTFactory >> createPage: thePageSource [
-	(self create: CSNPage) source: thePageSource
+	(self create: CSNPage) source: thePageSource; name: thePageSource name 
 ]
 
 { #category : #'as yet unclassified' }
