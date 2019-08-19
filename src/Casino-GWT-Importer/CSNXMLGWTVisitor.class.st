@@ -24,6 +24,7 @@ CSNXMLGWTVisitor >> visitDocument: aDocument [
 		parentWidget:
 			((self factory create: CSNUICustomWidget)
 				source: aDocument;
+				name: correspondingClass name;
 				yourself).
 	^ (aDocument nodes flatCollect: #nodes) do: [ :aNode | aNode acceptNodeVisitor: self ]
 ]

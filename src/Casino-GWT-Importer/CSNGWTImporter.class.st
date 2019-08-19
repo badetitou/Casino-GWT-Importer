@@ -16,12 +16,15 @@ CSNGWTImporter >> addLinkBetweenWidgets [
 ]
 
 { #category : #api }
-CSNGWTImporter >> addWidgetAttributes [
+CSNGWTImporter >> addWidgetDefaultAttributes [
+
 ]
 
 { #category : #api }
-CSNGWTImporter >> addWidgetDefaultAttributes [
-
+CSNGWTImporter >> addWidgetsAttributes [
+	(self model allWithSubTypesOf: CSNWidget)
+		do:
+			[ :widget | widget sources do: [ :source | (source isKindOf: XMLElement) ifTrue: [ "the source comes from XML" self factory createAttributesFor: widget from: source ] ifFalse: [ "the source comes from java" ] ] ]
 ]
 
 { #category : #'private - generateWidget' }
@@ -101,7 +104,7 @@ CSNGWTImporter >> generateXMLUiForXLMUiBinder: classWithXmlUI [
 
 { #category : #api }
 CSNGWTImporter >> import [
-	#(#generatePage #generateWidgets #addLinkBetweenWidgets #addWidgetAttributes #addWidgetDefaultAttributes)
+	#(#generatePage #generateWidgets #addLinkBetweenWidgets #addWidgetsAttributes #addWidgetDefaultAttributes)
 		do: [ :aStep | self perform: aStep ]
 		displayingProgress: [ :aStep | aStep asString ]
 		every: 10000

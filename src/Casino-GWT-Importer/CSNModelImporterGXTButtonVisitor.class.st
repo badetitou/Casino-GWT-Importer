@@ -38,3 +38,8 @@ CSNModelImporterGXTButtonVisitor >> visit: anElement [
 CSNModelImporterGXTButtonVisitor >> visitCSNUIButton: aCSNUIButton [
 	^ (source name = (self prefix, 'TextButton')) ifTrue: [ self createWidget: aCSNUIButton for: source ] ifFalse: [ ^ nil ]
 ]
+
+{ #category : #visitor }
+CSNModelImporterGXTButtonVisitor >> visitCSNUILabel: aCSNUILabel [
+	source name = 'text'
+]
