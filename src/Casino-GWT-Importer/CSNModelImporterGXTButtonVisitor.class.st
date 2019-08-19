@@ -41,5 +41,5 @@ CSNModelImporterGXTButtonVisitor >> visitCSNUIButton: aCSNUIButton [
 
 { #category : #visitor }
 CSNModelImporterGXTButtonVisitor >> visitCSNUILabel: aCSNUILabel [
-	source name = 'text'
+	^ (source name = 'text') ifTrue: [ self createAttribute: aCSNUILabel for: source ] ifFalse: [ nil ]
 ]
