@@ -6,12 +6,12 @@ Class {
 	#category : #'Casino-GWT-Importer-Importers'
 }
 
-{ #category : #'instance creation' }
-CSNModelImporterGXTButtonVisitor >> createAttributeFor: attributeElement [
-	^ (self create: self)
+{ #category : #visitor }
+CSNModelImporterGXTButtonVisitor >> createAttribute: aAttributeClass for: attributeElement [
+	^ (self create: aAttributeClass)
 		name: attributeElement name;
 		attributeValue: attributeElement value asLowercase;
-		widget: attributeElement;
+		widget: entity;
 		yourself
 ]
 

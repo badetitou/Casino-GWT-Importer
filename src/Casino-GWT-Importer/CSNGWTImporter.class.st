@@ -5,13 +5,14 @@ Class {
 	#name : #CSNGWTImporter,
 	#superclass : #CSNWebModel,
 	#instVars : [
-		'modelWidgetCache'
+		'xmlImporter'
 	],
 	#category : #'Casino-GWT-Importer'
 }
 
 { #category : #api }
 CSNGWTImporter >> addLinkBetweenWidgets [
+	(self model allWithSubTypesOf: CSNWidget) select: [ :widget | widget parents isEmpty ] thenDo: [ :widget | self linkWidget: widget ]
 ]
 
 { #category : #api }
@@ -69,28 +70,33 @@ CSNGWTImporter >> generateWidgets [
 		thenDo: [ :classWithXmlUI | self generateXMLUiForXLMUiBinder: (classWithXmlUI typeContainer)].
 
 	"STEP 2"
-	"self computeWidgetCreation
+	self computeWidgetCreation
 		do: [ :invocation | 
 			| widget |
 			widget := self factory createWidgetFor: invocation.
 			widget affectedActions: invocation affectation.
 			(widget affectedActions isNotNil and: [ widget affectedActions isInvocation not ]) ifTrue: [ widget name: widget affectedActions name ] ]
 		displayingProgress: [ :invoc | 'Generate widget : ' , invoc asString ]
-		every: 100"
+		every: 100
 ]
 
 { #category : #'private - generateWidget' }
 CSNGWTImporter >> generateXMLUiForXLMUiBinder: classWithXmlUI [
-	| visitor xmlModel |
-	visitor := CSNXMLGWTVisitor new
+	| xmlModel |
+	xmlImporter := CSNXMLGWTVisitor new
 		importer: self;
 		factory: self factory;
 		yourself.
 	classWithXmlUI sourceAnchor fileReference parent files
 		select: [ :file | file basename = (classWithXmlUI name , '.ui.xml') ]
 		thenDo: [ :file | 
-			xmlModel := (XMLDOMParser on: file readStream) isValidating: false; parseDocument.
-			xmlModel acceptNodeVisitor: visitor ]
+			xmlImporter
+				correspondingClass: classWithXmlUI;
+				xmluiFile: file.
+			xmlModel := (XMLDOMParser on: file readStream)
+				isValidating: false;
+				parseDocument.
+			xmlModel acceptNodeVisitor: xmlImporter ]
 ]
 
 { #category : #api }
@@ -101,9 +107,13 @@ CSNGWTImporter >> import [
 		every: 10000
 ]
 
+{ #category : #'private - linkWidget' }
+CSNGWTImporter >> linkWidget: aWidget [
+]
+
 { #category : #'private - generateWidget' }
 CSNGWTImporter >> modelWidget [
-	^ modelWidgetCache ifNil: [ modelWidgetCache := self sourceModel allClasses select: [ :e | e superclassHierarchy anySatisfy: [ :a | a name = 'Widget' ] ] ]
+	^ self sourceModel allClasses select: [ :e | e superclassHierarchy anySatisfy: [ :a | a name = 'Widget' ] ]
 ]
 
 { #category : #'private - generateWidget' }
@@ -122,4 +132,14 @@ CSNGWTImporter >> widgetConstructorsInvocation [
 					method isConstructor
 						or: [ (method name copyReplaceAll: '.' with: '::') asSymbol = method parentType mooseName  ] ]
 				thenCollect: #incomingInvocations ]) flattened
+]
+
+{ #category : #accessing }
+CSNGWTImporter >> xmlImporter [
+	^ xmlImporter
+]
+
+{ #category : #accessing }
+CSNGWTImporter >> xmlImporter: anObject [
+	xmlImporter := anObject
 ]

@@ -1,8 +1,22 @@
 Class {
 	#name : #CSNXMLGWTVisitor,
 	#superclass : #CSNXMLHTMLVisitor,
+	#instVars : [
+		'xmluiFile',
+		'correspondingClass'
+	],
 	#category : #'Casino-GWT-Importer'
 }
+
+{ #category : #accessing }
+CSNXMLGWTVisitor >> correspondingClass [
+	^ correspondingClass
+]
+
+{ #category : #accessing }
+CSNXMLGWTVisitor >> correspondingClass: anObject [
+	correspondingClass := anObject
+]
 
 { #category : #visiting }
 CSNXMLGWTVisitor >> visitDocument: aDocument [
@@ -36,4 +50,14 @@ CSNXMLGWTVisitor >> visitElement: anElement [
 			ex: a tooltip for a button  "
 			self parentWidget addAttribute: (self factory createAttributeFor: widget from: anElement).
 			^ nil ]
+]
+
+{ #category : #accessing }
+CSNXMLGWTVisitor >> xmluiFile [
+	^ xmluiFile
+]
+
+{ #category : #accessing }
+CSNXMLGWTVisitor >> xmluiFile: anObject [
+	xmluiFile := anObject
 ]

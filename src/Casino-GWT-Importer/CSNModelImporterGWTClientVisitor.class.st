@@ -7,11 +7,11 @@ Class {
 }
 
 { #category : #'instance creation' }
-CSNModelImporterGWTClientVisitor >> createAttributeFor: attributeElement [
-	^ (self create: self)
+CSNModelImporterGWTClientVisitor >> createAttribute: aAttributeClass for: attributeElement [
+	^ (self create: aAttributeClass)
 		name: attributeElement name;
 		attributeValue: attributeElement value asLowercase;
-		widget: attributeElement;
+		widget: entity;
 		yourself
 ]
 

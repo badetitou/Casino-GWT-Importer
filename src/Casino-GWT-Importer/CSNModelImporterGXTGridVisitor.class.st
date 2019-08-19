@@ -7,10 +7,11 @@ Class {
 }
 
 { #category : #'instance creation' }
-CSNModelImporterGXTGridVisitor >> createAttribute: anAttribute for: attributeElement [
-	^ (self create: anAttribute)
+CSNModelImporterGXTGridVisitor >> createAttribute: aAttributeClass for: attributeElement [
+	^ (self create: aAttributeClass)
 		name: attributeElement name;
 		attributeValue: attributeElement value asLowercase;
+		widget: entity;
 		yourself
 ]
 
