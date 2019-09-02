@@ -24,7 +24,9 @@ CSNGWTImporter >> addWidgetDefaultAttributes [
 CSNGWTImporter >> addWidgetsAttributes [
 	(self model allWithSubTypesOf: CSNWidget)
 		do:
-			[ :widget | widget sources do: [ :source | (source isKindOf: XMLElement) ifTrue: [ "the source comes from XML" self factory createAttributesFor: widget from: source ] ifFalse: [ "the source comes from java" ] ] ]
+			[ :widget | widget sources do: [ :source | (source isKindOf: XMLElement) 
+				ifTrue: [ "the source comes from XML" self factory createAttributesFor: widget from: source ] 
+				ifFalse: [ "the source comes from java" ] ] ]
 ]
 
 { #category : #'private - generateWidget' }

@@ -35,7 +35,6 @@ CSNXMLGWTVisitor >> visitElement: anElement [
 
 	self parentWidget ifNil: [ 
 			widget := self factory createWidgetFor: anElement.
-			self factory createAttributesFor: widget from: anElement.
 			^ self clone
 				parentWidget: widget;
 				visitNodeWithElements: anElement ].
@@ -43,7 +42,6 @@ CSNXMLGWTVisitor >> visitElement: anElement [
 		ifTrue: [ "A leaf cannot add a widget"
 			widget := self factory createWidgetFor: anElement.
 			self parentWidget addWidget: widget.
-			self factory createAttributesFor: widget from: anElement.
 			^ self clone
 				parentWidget: widget;
 				visitNodeWithElements: anElement ]

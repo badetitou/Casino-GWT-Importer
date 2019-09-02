@@ -92,6 +92,11 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIInputTime:  aCSNUIInputTime [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTFormVisitor >> visitCSNUIMaxlength: aCSNUIMaxlength [
+	^ (source name = 'labelWidth') ifTrue: [ self createAttribute: CSNUIMaxlength for: source ] ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUISelect: aCSNUISelect [
 	^ source name = (self prefix , 'ComboBox')
 		ifTrue: [ self createWidget: aCSNUISelect for: source ]
