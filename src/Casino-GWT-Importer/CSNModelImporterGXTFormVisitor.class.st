@@ -9,11 +9,6 @@ Class {
 	#category : #'Casino-GWT-Importer-Importers'
 }
 
-{ #category : #visitor }
-CSNModelImporterGXTFormVisitor >> computeAttributeValueOf: label [
-	label attributeValue: (label source attributeAt: 'text')
-]
-
 { #category : #'instance creation' }
 CSNModelImporterGXTFormVisitor >> createAttribute: aAttributeClass for: attributeElement [
 	^ (self create: aAttributeClass)
@@ -51,14 +46,7 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
 
 { #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUIInput: aCSNUIInput [
-	^ source name = (self prefix , 'FieldLabel')
-		ifTrue: [ | label realInput |
-			label := self create: CSNUILabel fromSource: source.
-			self computeAttributeValueOf: label.
-			realInput := self factory createWidgetFor: source descendantElements last withParent: nil.
-			realInput addAttribute: label.
-			realInput ]
-		ifFalse: [ nil ]
+	^ source name = (self prefix , 'FieldLabel') ifTrue: [ self createWidget: CSNUIWidgetLabel for: source ] ifFalse: [ nil ]
 ]
 
 { #category : #visitor }
@@ -100,6 +88,13 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIInputText: aCSNUIInputText [
 CSNModelImporterGXTFormVisitor >> visitCSNUIInputTime:  aCSNUIInputTime [
 	^ source name = (self prefix , 'TimeField')
 		ifTrue: [ self createWidget: aCSNUIInputTime for: source ]
+		ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
+CSNModelImporterGXTFormVisitor >> visitCSNUISelect: aCSNUISelect [
+	^ source name = (self prefix , 'ComboBox')
+		ifTrue: [ self createWidget: aCSNUISelect for: source ]
 		ifFalse: [ nil ]
 ]
 
