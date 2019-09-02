@@ -46,7 +46,13 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
 
 { #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUIInput: aCSNUIInput [
-	^ source name = (self prefix , 'FieldLabel') ifTrue: [ self createWidget: CSNUIWidgetLabel for: source ] ifFalse: [ nil ]
+	^ source name = (self prefix , 'FieldLabel') ifTrue: [ 
+		| label container |
+		container := self create: CSNContainer. 
+		label := self createWidget: CSNUIWidgetLabel for: source.
+		container addWidget: label.
+		container 
+		 ] ifFalse: [ nil ]
 ]
 
 { #category : #visitor }
@@ -107,5 +113,8 @@ CSNModelImporterGXTFormVisitor >> visitCSNUITextarea: aCSNUITextarea [
 
 { #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUIWidth: aCSNUIWidth [
-	^ (source name = 'labelWidth') ifTrue: [ self createAttribute: CSNUIWidth for: source ] ifFalse: [ nil ]
+	^ (source name = 'labelWidth') ifTrue: [ | width |
+		width := self createAttribute: CSNUIWidth for: source.
+		width attributeValue: width attributeValue, 'px'.
+		width ] ifFalse: [ nil ]
 ]
