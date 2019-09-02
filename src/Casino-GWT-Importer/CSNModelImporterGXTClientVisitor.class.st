@@ -36,8 +36,28 @@ CSNModelImporterGXTClientVisitor >> visit: anElement [
 
 { #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
-	^ source name = (self prefix , 'Window')
+	^ ({(self prefix , 'Window'). (self prefix , 'FramedPanel')} includes: source name)  
 		ifTrue: [ self createWidget: aCSNUIFieldset for: source ]
+		ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
+CSNModelImporterGXTClientVisitor >> visitCSNUISize: aCSNUISize [
+	"handle the pixelSize (with height and width)"
+
+	^ source name = 'pixelSize'
+		ifTrue: [ | sizeString |
+			sizeString := (source value asLowercase substrings: ',') collect: #trimBoth.
+			(sizeString first beginsWith: '-')
+				ifFalse: [ (self create: CSNUIWidth)
+						name: 'width';
+						attributeValue: sizeString first , 'px';
+						widget: entity ].
+			(sizeString second beginsWith: '-')
+				ifFalse: [ (self create: CSNUIHeight)
+						name: 'height';
+						attributeValue: sizeString second , 'px';
+						widget: entity ] ]
 		ifFalse: [ nil ]
 ]
 

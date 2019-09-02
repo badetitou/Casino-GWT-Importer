@@ -63,6 +63,13 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIInputCheckbox: aCSNUIInputCheckbox [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTFormVisitor >> visitCSNUIInputDate: aCSNUIInputDate [
+	^ source name = (self prefix , 'DateField')
+		ifTrue: [ self createWidget: aCSNUIInputDate for: source ]
+		ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUIInputNumber: aCSNUIInputNumber [
 	^ source name = (self prefix , 'NumberField')
 		ifTrue: [ self createWidget: aCSNUIInputNumber for: source ]
