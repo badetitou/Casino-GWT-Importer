@@ -33,3 +33,15 @@ CSNModelImporterGXTClientVisitor >> initialize [
 CSNModelImporterGXTClientVisitor >> visit: anElement [
 	^ anElement accept: self
 ]
+
+{ #category : #visitor }
+CSNModelImporterGXTClientVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
+	^ source name = (self prefix , 'Window')
+		ifTrue: [ self createWidget: aCSNUIFieldset for: source ]
+		ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
+CSNModelImporterGXTClientVisitor >> visitCSNUITitle: aCSNUITitle [
+	^ (source name = 'headingText') ifTrue: [ self createAttribute: CSNUITitle for: source ] ifFalse: [ nil ]
+]
