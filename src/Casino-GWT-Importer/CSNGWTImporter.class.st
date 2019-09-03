@@ -12,7 +12,8 @@ Class {
 
 { #category : #api }
 CSNGWTImporter >> addLinkBetweenWidgets [
-	(self model allWithSubTypesOf: CSNWidget) select: [ :widget | widget parents isEmpty ] thenDo: [ :widget | self linkWidget: widget ]
+	(self model allWithSubTypesOf: CSNWidget) select: [ :widget | widget parents isEmpty ] thenDo: [ :widget | self linkWidget: widget ].
+	(self model allWithSubTypesOf: CSNUICustomWidget) do: [ :widget | self linkCustomWidget: widget ].
 ]
 
 { #category : #api }
@@ -112,6 +113,26 @@ CSNGWTImporter >> import [
 		every: 10000
 ]
 
+{ #category : #api }
+CSNGWTImporter >> linkCustomWidget: widget [
+	| possibleClasses invocations methodAST |
+	invocations := ((((widget sources select: [ :source | source isKindOf: FAMIXClass ]) flatCollect: [ :source | source incomingInvocations ])
+		select: [ :invocation | invocation signature = 'getView()' ]
+		thenCollect: #from) flatCollect: #incomingInvocations).
+	methodAST := invocations collect: [ :invoc | invoc from generateFastIfNotDoneAndBind ].
+	
+	possibleClasses := (invocations flatCollect: [:invoc | ((invoc fast atScope: FASTJavaNewExpression) first famix) to ]) collect: #parentType.
+	
+	self haltIf: [ widget name beginsWith: 'NavView' ].
+
+
+	self model allCSNPage , (self model allWithSubTypesOf: CSNUICustomWidget) detect: [ :container | container sources includesAny: possibleClasses ] ifFound: [ :founded | founded addWidget: widget ] ifNone: [ 1halt ]
+	"widget sources iterator
+		| [ :source | source isKindOf: FAMIXClass ] selectIt 
+		| [ :source | source incomingInvocations ] collectIt
+		> Array ."
+]
+
 { #category : #'private - linkWidget' }
 CSNGWTImporter >> linkWidget: aWidget [
 	"Link a widget with its parent if possible.
@@ -120,12 +141,12 @@ In java, the widget must exist in a structural entity"
 	"1. Check the widget has an affected actions (so it has a variable in java)"
 
 	aWidget affectedActions ifNil: [ ^ nil ].
-	"Check if I am a parameter of the add() method. If yes, my parent is the widget that call me"
+	"2. Check if I am a parameter of the add() method. If yes, my parent is the widget that call me"
 	(aWidget affectedActions fastAccesses
 		collect: #parentNode
 		thenSelect:
 			[ :parentNode | (parentNode isKindOf: FASTJavaMethodInvocation) and: [ parentNode name = 'add' and: [ parentNode receiver isNotNil and: [ (parentNode receiver isKindOf: FASTJavaMethodInvocation) not ] ] ] ])
-		do: [ :parentNodeMethodInvocation | (self widgetsWithAffectedAction: parentNodeMethodInvocation receiver famixVariable) do: [ :parent | parent addWidget: aWidget ] ]
+		do: [ :parentNodeMethodInvocation | (self widgetsWithAffectedAction: parentNodeMethodInvocation receiver famixVariable) do: [ :parent | parent addWidget: aWidget ] ].
 ]
 
 { #category : #'private - generateWidget' }
