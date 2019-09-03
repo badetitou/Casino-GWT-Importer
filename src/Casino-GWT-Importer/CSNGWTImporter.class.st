@@ -123,10 +123,9 @@ CSNGWTImporter >> linkCustomWidget: widget [
 	
 	possibleClasses := (invocations flatCollect: [:invoc | ((invoc fast atScope: FASTJavaNewExpression) first famix) to ]) collect: #parentType.
 	
-	self haltIf: [ widget name beginsWith: 'NavView' ].
 
 
-	self model allCSNPage , (self model allWithSubTypesOf: CSNUICustomWidget) detect: [ :container | container sources includesAny: possibleClasses ] ifFound: [ :founded | founded addWidget: widget ] ifNone: [ 1halt ]
+	self model allCSNPage , (self model allWithSubTypesOf: CSNUICustomWidget) detect: [ :container | container sources includesAny: possibleClasses ] ifFound: [ :founded | founded addWidget: widget ] ifNone: [  ]
 	"widget sources iterator
 		| [ :source | source isKindOf: FAMIXClass ] selectIt 
 		| [ :source | source incomingInvocations ] collectIt

@@ -45,11 +45,20 @@ CSNXMLGWTVisitor >> visitElement: anElement [
 			self parentWidget addWidget: widget.
 			^ self clone
 				parentWidget: widget;
-				visitNodeWithElements: anElement ]
-		ifFalse: [ "If a leaf have children nodes. They probably are attributes represented by a node
+				visitNodeWithElements: anElement ].
+	(self parentWidget isKindOf: CSNLCell)
+		ifTrue: [ "A leaf cannot add a widget"
+			widget := self factory createWidgetFor: anElement.
+			self parentWidget widget: widget.
+			^ self clone
+				parentWidget: widget;
+				visitNodeWithElements: anElement ].
+	
+	
+	"If a leaf have children nodes. They probably are attributes represented by a node
 			ex: a tooltip for a button  "
-			self parentWidget addAttribute: (self factory createAttributeFor: widget from: anElement).
-			^ nil ]
+			"self parentWidget addAttribute: (self factory createAttributeFor: widget from: anElement)."
+			^ nil 
 ]
 
 { #category : #accessing }
