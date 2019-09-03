@@ -16,6 +16,14 @@ CSNModelImporterGXTContainerVisitor >> createAttribute: aAttributeClass for: att
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTContainerVisitor >> createLayout: aLayoutClass for: sourceCode [
+	^ (self create: aLayoutClass)
+		source: sourceCode;
+		name: sourceCode name;
+		yourself
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTContainerVisitor >> createWidget: aWidgetClass for: widgetElement [
 	^ (self create: aWidgetClass)
 		source: widgetElement;
@@ -35,13 +43,23 @@ CSNModelImporterGXTContainerVisitor >> visit: anElement [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTContainerVisitor >> visitCSNLBorderLayout: aCSNLBorderLayout [
+	^ source name = (self prefix , 'BorderLayoutContainer') ifTrue: [ self createLayout: aCSNLBorderLayout for: source ] ifFalse: [ ^ nil ]
+]
+
+{ #category : #visitor }
+CSNModelImporterGXTContainerVisitor >> visitCSNLVerticalLayout: aCSNLVerticalLayout [
+	^ source name = (self prefix , 'VerticalLayoutContainer') ifTrue: [ self createLayout: CSNLVerticalLayout for: source ] ifFalse: [ ^ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTContainerVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
 	^ nil
 ]
 
 { #category : #visitor }
 CSNModelImporterGXTContainerVisitor >> visitCSNUIPanel: aCSNUIPanel [
-	^ (source name = (self prefix, 'VerticalLayoutContainer')) ifTrue: [ | panel | 
+	^ ((source name beginsWith: self prefix) and: [ source name endsWith: 'Container']) ifTrue: [ | panel | 
 		panel := self createWidget: aCSNUIPanel for: source.
-		panel layout: (self create: CSNLVerticalLayout) ] ifFalse: [ ^ nil ]
+		panel layout: (self factory createLayoutFor: source withParent: panel ) ] ifFalse: [ ^ nil ]
 ]
