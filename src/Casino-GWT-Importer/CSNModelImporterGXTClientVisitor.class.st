@@ -42,6 +42,13 @@ CSNModelImporterGXTClientVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTClientVisitor >> visitCSNUIPanel: aCSNUIPanel [
+	^ ((self prefix , 'ContentPanel') = source name)  
+		ifTrue: [ self createWidget: aCSNUIPanel for: source ]
+		ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUISize: aCSNUISize [
 	"handle the pixelSize (with height and width)"
 
