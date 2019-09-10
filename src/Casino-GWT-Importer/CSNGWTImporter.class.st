@@ -113,19 +113,37 @@ CSNGWTImporter >> import [
 		every: 10000
 ]
 
-{ #category : #api }
+{ #category : #'private - linkWidget' }
 CSNGWTImporter >> linkCustomWidget: widget [
-	| possibleClasses invocations methodAST |
+	| possibleClasses invocations methodAST possibleMethods possibleNewExpressions positionArguments possibleNewExpressionsToInvoc |
+	
+	"widget sources iterator
+		| [ :source | source isKindOf: FAMIXClass ] selectIt 
+		| [ :source | source incomingInvocations ] collectIt
+		| FlattenIterator
+		| [ :invocation | invocation signature = 'getView()' ] selectIt
+		| #from collectIt
+		| #incomingInvocations collectIt
+		| FlattenIterator
+		> Array "
+	
 	invocations := ((((widget sources select: [ :source | source isKindOf: FAMIXClass ]) flatCollect: [ :source | source incomingInvocations ])
 		select: [ :invocation | invocation signature = 'getView()' ]
 		thenCollect: #from) flatCollect: #incomingInvocations).
+	
 	methodAST := invocations collect: [ :invoc | invoc from generateFastIfNotDoneAndBind ].
 	
-	possibleClasses := (invocations flatCollect: [:invoc | ((invoc fast atScope: FASTJavaNewExpression) first famix) to ]) collect: #parentType.
+	possibleNewExpressionsToInvoc := invocations collect: [:invoc | ((invoc fast atScope: FASTJavaNewExpression) first) -> invoc ].
+	positionArguments := possibleNewExpressionsToInvoc collect: [ :newExpressionToInvoc | newExpressionToInvoc key arguments asOrderedCollection indexOf: newExpressionToInvoc value fast ].
+	possibleMethods := possibleNewExpressionsToInvoc flatCollect: [:newExpressionToInvoc | newExpressionToInvoc key famix to].
+	possibleMethods do: [ :method | method generateFastIfNotDoneAndBind.
+		positionArguments do: [ :position | (method fast parameters at: position) variable famixVariable fastAssignement do: [:assignement | . 1halt.] ].
+ ].
 	
+	possibleMethods.
 
-
-	self model allCSNPage , (self model allWithSubTypesOf: CSNUICustomWidget) detect: [ :container | container sources includesAny: possibleClasses ] ifFound: [ :founded | founded addWidget: widget ] ifNone: [  ]
+	"self halt. "
+	self model allCSNPage , (self model allWithSubTypesOf: CSNUICustomWidget) detect: [ :container | false "container sources includesAny: possibleClasses" ] ifFound: [ :founded | founded addWidget: widget ] ifNone: [  ]
 	"widget sources iterator
 		| [ :source | source isKindOf: FAMIXClass ] selectIt 
 		| [ :source | source incomingInvocations ] collectIt
