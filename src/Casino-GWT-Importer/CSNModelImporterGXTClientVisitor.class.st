@@ -48,6 +48,11 @@ CSNModelImporterGXTClientVisitor >> visitCSNUISize: aCSNUISize [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTClientVisitor >> visitCSNUITab: aCSNUITab [
+	^ (self prefix , 'PlainTabPanel') = source name ifTrue: [ self createWidget: aCSNUITab for: source ] ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUITitle: aCSNUITitle [
 	^ (source name = 'headingText') ifTrue: [ self createAttribute: CSNUITitle for: source ] ifFalse: [ nil ]
 ]
