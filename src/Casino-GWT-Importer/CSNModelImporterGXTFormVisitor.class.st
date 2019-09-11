@@ -79,6 +79,13 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIInputRadio: aCSNUIInputRadio [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTFormVisitor >> visitCSNUIInputSearch:  aCSNUIInputSearch [
+	^ source name = (self prefix , 'StoreFilterField')
+		ifTrue: [ self createWidget: aCSNUIInputSearch for: source ]
+		ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUIInputText: aCSNUIInputText [
 	^ source name = (self prefix , 'TextField')
 		ifTrue: [ self createWidget: aCSNUIInputText for: source ]
