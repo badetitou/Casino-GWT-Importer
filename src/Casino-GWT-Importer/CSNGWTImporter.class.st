@@ -115,8 +115,7 @@ CSNGWTImporter >> import [
 
 { #category : #'private - linkWidget' }
 CSNGWTImporter >> linkCustomWidget: widget [
-	| possibleClasses invocations methodAST possibleMethods possibleNewExpressions positionArguments possibleNewExpressionsToInvoc |
-	
+	| possibleClasses invocations methodAST possibleMethods possibleNewExpressions positionArguments possibleNewExpressionsToInvoc possibleAttributes |
 	"widget sources iterator
 		| [ :source | source isKindOf: FAMIXClass ] selectIt 
 		| [ :source | source incomingInvocations ] collectIt
@@ -126,28 +125,31 @@ CSNGWTImporter >> linkCustomWidget: widget [
 		| #incomingInvocations collectIt
 		| FlattenIterator
 		> Array "
-	
-	invocations := ((((widget sources select: [ :source | source isKindOf: FAMIXClass ]) flatCollect: [ :source | source incomingInvocations ])
+	invocations := (((widget sources select: [ :source | source isKindOf: FAMIXClass ]) flatCollect: [ :source | source incomingInvocations ])
 		select: [ :invocation | invocation signature = 'getView()' ]
-		thenCollect: #from) flatCollect: #incomingInvocations).
-	
-	methodAST := invocations collect: [ :invoc | invoc from generateFastIfNotDoneAndBind ].
-	
-	possibleNewExpressionsToInvoc := invocations collect: [:invoc | ((invoc fast atScope: FASTJavaNewExpression) first) -> invoc ].
-	positionArguments := possibleNewExpressionsToInvoc collect: [ :newExpressionToInvoc | newExpressionToInvoc key arguments asOrderedCollection indexOf: newExpressionToInvoc value fast ].
-	possibleMethods := possibleNewExpressionsToInvoc flatCollect: [:newExpressionToInvoc | newExpressionToInvoc key famix to].
-	possibleMethods do: [ :method | method generateFastIfNotDoneAndBind.
-		positionArguments do: [ :position | (method fast parameters at: position) variable famixVariable fastAssignement do: [:assignement | . 1halt.] ].
- ].
-	
-	possibleMethods.
+		thenCollect: #from) flatCollect: #incomingInvocations.
 
-	"self halt. "
-	self model allCSNPage , (self model allWithSubTypesOf: CSNUICustomWidget) detect: [ :container | false "container sources includesAny: possibleClasses" ] ifFound: [ :founded | founded addWidget: widget ] ifNone: [  ]
-	"widget sources iterator
+	methodAST := invocations collect: [ :invoc | invoc from generateFastIfNotDoneAndBind ].
+
+	possibleNewExpressionsToInvoc := invocations collect: [ :invoc | (invoc fast atScope: FASTJavaNewExpression) first -> invoc ].
+	positionArguments := possibleNewExpressionsToInvoc collect: [ :newExpressionToInvoc | newExpressionToInvoc key arguments asOrderedCollection indexOf: newExpressionToInvoc value fast ].
+	possibleMethods := possibleNewExpressionsToInvoc flatCollect: [ :newExpressionToInvoc | newExpressionToInvoc key famix to ].
+	possibleAttributes := possibleMethods
+		flatCollect: [ :method | 
+			method generateFastIfNotDoneAndBind.
+			positionArguments
+				flatCollect: [ :position |
+					(method fast parameters at: position) variable famixVariable fastAccesses
+						flatCollect: [ :fastAccess | (fastAccess atScope: FASTJavaAssignementExpression until: [ :c | c isKindOf: FASTStatement ]) collect: [ :assignement | assignement variable famixVariable ] ] ] ].
+
+
+	(self model allWithSubTypesOf: CSNContainer)
+		detect: [ :container | container sources includesAny: possibleAttributes ]
+		ifFound: [ :founded | founded addWidget: widget ]
+		ifNone: [ "widget sources iterator
 		| [ :source | source isKindOf: FAMIXClass ] selectIt 
 		| [ :source | source incomingInvocations ] collectIt
-		> Array ."
+		> Array ." ]
 ]
 
 { #category : #'private - linkWidget' }
