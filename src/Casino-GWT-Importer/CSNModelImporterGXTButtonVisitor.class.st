@@ -34,3 +34,8 @@ CSNModelImporterGXTButtonVisitor >> visitCSNUIDisabled: aCSNUIDisabled [
 CSNModelImporterGXTButtonVisitor >> visitCSNUILabel: aCSNUILabel [
 	^ (source name = 'text') ifTrue: [ self createAttribute: aCSNUILabel for: source ] ifFalse: [ nil ]
 ]
+
+{ #category : #visitor }
+CSNModelImporterGXTButtonVisitor >> visitCSNUIPlaceholder: aCSNUIPlaceholder [
+	^ source name = 'emptyText' ifTrue: [ self createAttribute: aCSNUIPlaceholder for: source ] ifFalse: [ ^ nil ]
+]
