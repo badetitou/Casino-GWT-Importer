@@ -21,6 +21,16 @@ CSNModelImporterGXTButtonVisitor >> visitCSNUIButton: aCSNUIButton [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTButtonVisitor >> visitCSNUIDisabled: aCSNUIDisabled [
+	^ source name = 'enabled'
+		ifTrue: [ | disable |
+			disable := self createAttribute: aCSNUIDisabled for: source.
+			source value = 'false' ifTrue: [ disable disabled: true ] ifFalse: [ disable disabled: false ].
+			disable ]
+		ifFalse: [ ^ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTButtonVisitor >> visitCSNUILabel: aCSNUILabel [
 	^ (source name = 'text') ifTrue: [ self createAttribute: aCSNUILabel for: source ] ifFalse: [ nil ]
 ]
