@@ -51,6 +51,13 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIInputDate: aCSNUIInputDate [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTFormVisitor >> visitCSNUIInputFile:  aCSNUIInputFile [
+	^ source name = (self prefix , 'FileUploadField')
+		ifTrue: [ self createWidget: aCSNUIInputFile for: source ]
+		ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUIInputNumber: aCSNUIInputNumber [
 	^ source name = (self prefix , 'NumberField')
 		ifTrue: [ self createWidget: aCSNUIInputNumber for: source ]
