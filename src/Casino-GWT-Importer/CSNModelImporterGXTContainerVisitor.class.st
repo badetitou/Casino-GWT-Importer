@@ -63,7 +63,7 @@ CSNModelImporterGXTContainerVisitor >> visitCSNLSouthAlignement: aSouthAlignemen
 
 { #category : #visitor }
 CSNModelImporterGXTContainerVisitor >> visitCSNLVerticalLayout: aCSNLVerticalLayout [
-	^ source name = (self prefix , 'VerticalLayoutContainer') ifTrue: [ self createLayout: CSNLVerticalLayout for: source ] ifFalse: [ ^ nil ]
+	^ ({(self prefix , 'VerticalLayoutContainer') . (self prefix , 'HBoxLayoutContainer')} includes: source name) ifTrue: [ self createLayout: CSNLVerticalLayout for: source ] ifFalse: [ ^ nil ]
 ]
 
 { #category : #visitor }
@@ -78,7 +78,15 @@ CSNModelImporterGXTContainerVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
 
 { #category : #visitor }
 CSNModelImporterGXTContainerVisitor >> visitCSNUIPanel: aCSNUIPanel [
-	^ ((source name beginsWith: self prefix) and: [ source name endsWith: 'Container']) ifTrue: [ | panel | 
-		panel := self createWidget: aCSNUIPanel for: source.
-		panel layout: (self factory createLayoutFor: source withParent: panel ) ] ifFalse: [ ^ nil ]
+	source name = (self prefix , 'SimpleContainer') ifTrue: [ ^ self createWidget: aCSNUIPanel for: source ].
+
+	^ ((source name beginsWith: self prefix) and: [ source name endsWith: 'Container' ])
+		ifTrue: [ (entity isKindOf: CSNLCell)
+				ifTrue: [ | container |
+					container := self create: CSNContainer.
+					container layout: (self factory createLayoutFor: source withParent: entity).
+					container ]
+				ifFalse: [ entity layout: (self factory createLayoutFor: source withParent: entity).
+					entity layout ] ]
+		ifFalse: [ nil ]
 ]

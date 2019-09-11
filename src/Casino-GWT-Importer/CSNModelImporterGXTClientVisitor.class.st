@@ -17,16 +17,15 @@ CSNModelImporterGXTClientVisitor >> visit: anElement [
 
 { #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
-	^ ({(self prefix , 'Window'). (self prefix , 'FramedPanel')} includes: source name)  
+	^ (({(self prefix , 'Window') . (self prefix , 'FramedPanel')} includes: source name)
+		or: [ (source name beginsWith: self prefix) and: [ (source name endsWith: 'Container') and: [ source attributeAt: 'headingText' isNotEmpty ] ] ])
 		ifTrue: [ self createWidget: aCSNUIFieldset for: source ]
 		ifFalse: [ nil ]
 ]
 
 { #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUIPanel: aCSNUIPanel [
-	^ ((self prefix , 'ContentPanel') = source name)  
-		ifTrue: [ self createWidget: aCSNUIPanel for: source ]
-		ifFalse: [ nil ]
+	^ (self prefix , 'ContentPanel') = source name ifTrue: [ self createWidget: aCSNUIPanel for: source ] ifFalse: [ nil ]
 ]
 
 { #category : #visitor }

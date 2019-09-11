@@ -23,7 +23,7 @@ CSNGWTImporter >> addWidgetDefaultAttributes [
 
 { #category : #api }
 CSNGWTImporter >> addWidgetsAttributes [
-	((self model allWithSubTypesOf: CSNWidget), (self model allWithSubTypesOf: CSNLLayout)) 
+	(self model allWithSubTypesOf: CSNWidget)
 		do:
 			[ :widget | widget sources do: [ :source | (source isKindOf: XMLElement) 
 				ifTrue: [ "the source comes from XML" self factory createAttributesFor: widget from: source ] 
