@@ -17,8 +17,7 @@ CSNModelImporterGXTClientVisitor >> visit: anElement [
 
 { #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
-	^ (({(self prefix , 'Window') . (self prefix , 'FramedPanel')} includes: source name)
-		or: [ (source name beginsWith: self prefix) and: [ (source name endsWith: 'Container') and: [ source attributeAt: 'headingText' isNotEmpty ] ] ])
+	^ (({(self prefix , 'Window') . (self prefix , 'FramedPanel')} includes: source name) or: [ (self prefix , 'ContentPanel') = source name and: [ (source attributeAt: 'headingText') isNotEmpty ] ])
 		ifTrue: [ self createWidget: aCSNUIFieldset for: source ]
 		ifFalse: [ nil ]
 ]
