@@ -33,13 +33,13 @@ CSNXMLGWTVisitor >> visitDocument: aDocument [
 { #category : #visiting }
 CSNXMLGWTVisitor >> visitElement: anElement [
 	| widget |
-	self parentWidget ifNil: [ widget := self factory createWidgetFor: anElement ].
-	(self parentWidget isContainer or: [ self parentWidget isKindOf: CSNLLayout ])
-		ifTrue: [ widget := self factory createWidgetFor: anElement withParent: self parentWidget.
-			(widget isKindOf: CSNLLayout) ifFalse: [ self parentWidget addWidget: widget ] ].
-	(self parentWidget isKindOf: CSNLCell)
-		ifTrue: [ widget := self factory createWidgetFor: anElement withParent: self parentWidget.
-			self parentWidget widget: widget ].
+	self parentWidget ifNil: [ widget := self factory createWidgetFor: anElement ] ifNotNil: [ widget := self factory createWidgetFor: anElement withParent: self parentWidget ].
+	self parentWidget isContainer ifTrue: [ (widget isKindOf: CSNLLayout) ifFalse: [ "ifTrue, already done by construction" self parentWidget addWidgets: widget ] ].
+	(self parentWidget isKindOf: CSNLLayout) ifTrue: [ self parentWidget addWidget: widget ].
+	(self parentWidget isKindOf: CSNLCell) ifTrue: [ self parentWidget widget: widget ].
+
+	"If I get a container with a layout, the parent for the futur will be the layout itself"
+	(widget isContainer and: [ widget layout isNotNil ]) ifTrue: [ widget := widget layout ].
 	^ self clone
 		parentWidget: widget;
 		visitNodeWithElements: anElement

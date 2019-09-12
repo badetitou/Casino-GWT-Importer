@@ -81,12 +81,18 @@ CSNModelImporterGXTContainerVisitor >> visitCSNUIPanel: aCSNUIPanel [
 	source name = (self prefix , 'SimpleContainer') ifTrue: [ ^ self createWidget: aCSNUIPanel for: source ].
 
 	^ ((source name beginsWith: self prefix) and: [ source name endsWith: 'Container' ])
-		ifTrue: [ (entity isKindOf: CSNLCell)
+		ifTrue: [
+			|container|
+			container := self create: CSNContainer.
+					container layout: (self factory createLayoutFor: source withParent: entity).
+					container
+			
+			" (entity isKindOf: CSNLCell)
 				ifTrue: [ | container |
 					container := self create: CSNContainer.
 					container layout: (self factory createLayoutFor: source withParent: entity).
 					container ]
 				ifFalse: [ entity layout: (self factory createLayoutFor: source withParent: entity).
-					entity layout ] ]
+					entity layout ]" ]
 		ifFalse: [ nil ]
 ]
