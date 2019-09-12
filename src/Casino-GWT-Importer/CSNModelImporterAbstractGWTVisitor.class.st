@@ -19,7 +19,7 @@ CSNModelImporterAbstractGWTVisitor >> computeJavaSourcesOf: createdEntity fromAt
 	"1. get the class"
 	correspondingClass := self factory importer xmlImporter correspondingClass.
 	"2. check attributes"
-	javaAttribute := correspondingClass attributes detect: [ :attribute | attribute name = attributeName ] ifOne: [ :attribute | createdEntity addSource: attribute ] ifNone: [ nil ].
+	javaAttribute := correspondingClass attributes detect: [ :attribute | attribute name = attributeName ] ifOne: [ :attribute | createdEntity addSource: attribute. attribute ] ifNone: [ nil ].
 	"3. Check the UiHandler"
 	(correspondingClass allToScope: FamixTAnnotationInstance)
 		select: [ :annotationInstance | annotationInstance annotationType name = 'UiHandler' and: [ annotationInstance attributes anyOne value = attributeName ] ]

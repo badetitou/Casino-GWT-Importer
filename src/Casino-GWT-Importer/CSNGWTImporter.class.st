@@ -5,7 +5,8 @@ Class {
 	#name : #CSNGWTImporter,
 	#superclass : #CSNWebModel,
 	#instVars : [
-		'xmlImporter'
+		'xmlImporter',
+		'javaFactory'
 	],
 	#category : #'Casino-GWT-Importer'
 }
@@ -27,7 +28,10 @@ CSNGWTImporter >> addWidgetsAttributes [
 		do:
 			[ :widget | widget sources do: [ :source | (source isKindOf: XMLElement) 
 				ifTrue: [ "the source comes from XML" self factory createAttributesFor: widget from: source ] 
-				ifFalse: [ "the source comes from java" ] ] ]
+				ifFalse: [ widget affectedActions ifNotNil: [ :variableStructuralEntity | variableStructuralEntity receivingInvocations do: [ :invoc | 
+							self javaFactory createAttributeFor: widget from: invoc. ] ] "the source comes from java" ] ] ]
+		displayingProgress: [ :widget | 'compute attribute of ' , widget asString ]
+		every: 1000
 ]
 
 { #category : #'private - generateWidget' }
@@ -49,7 +53,14 @@ CSNGWTImporter >> createFactory [
 		addVisitorImporter: CSNModelImporterGXTFormVisitor new;
 		addVisitorImporter: CSNModelImporterGXTGridVisitor new;
 		addVisitorImporter: CSNModelImporterGXTTreegridVisitor new;
-		yourself
+		addVisitorImporter: CSNModelImporterGXTToolbarVisitor new;
+		yourself.
+	javaFactory := self javaFactoryClass new
+		model: model;
+		importer: self;
+		addVisitorImporter: CSNModelImporterJavaGWTVisitor new;
+		yourself.
+		
 ]
 
 { #category : #initialization }
@@ -112,6 +123,21 @@ CSNGWTImporter >> import [
 		do: [ :aStep | self perform: aStep ]
 		displayingProgress: [ :aStep | aStep asString ]
 		every: 10000
+]
+
+{ #category : #accessing }
+CSNGWTImporter >> javaFactory [
+	^ javaFactory
+]
+
+{ #category : #accessing }
+CSNGWTImporter >> javaFactory: anObject [
+	javaFactory := anObject
+]
+
+{ #category : #initialization }
+CSNGWTImporter >> javaFactoryClass [
+	^ CSNWidgetFactory
 ]
 
 { #category : #'private - linkWidget' }

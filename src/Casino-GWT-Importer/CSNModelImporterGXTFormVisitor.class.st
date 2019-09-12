@@ -100,6 +100,11 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIInputTime:  aCSNUIInputTime [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTFormVisitor >> visitCSNUILabel: aCSNUILabel [
+	^ (source name = 'boxLabel') ifTrue: [ self createAttribute: aCSNUILabel for: source ] ifFalse: [ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUISelect: aCSNUISelect [
 	^ source name = (self prefix , 'ComboBox')
 		ifTrue: [ self createWidget: aCSNUISelect for: source ]
