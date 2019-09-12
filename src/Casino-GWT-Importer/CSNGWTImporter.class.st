@@ -48,6 +48,7 @@ CSNGWTImporter >> createFactory [
 		addVisitorImporter: CSNModelImporterGXTContainerVisitor new;
 		addVisitorImporter: CSNModelImporterGXTFormVisitor new;
 		addVisitorImporter: CSNModelImporterGXTGridVisitor new;
+		addVisitorImporter: CSNModelImporterGXTTreegridVisitor new;
 		yourself
 ]
 

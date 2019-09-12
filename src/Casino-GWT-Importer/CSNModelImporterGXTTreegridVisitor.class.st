@@ -1,23 +1,23 @@
 Class {
-	#name : #CSNModelImporterGXTGridVisitor,
+	#name : #CSNModelImporterGXTTreegridVisitor,
 	#superclass : #CSNModelImporterAbstractGWTVisitor,
 	#category : #'Casino-GWT-Importer-Importers'
 }
 
 { #category : #initialization }
-CSNModelImporterGXTGridVisitor >> initialize [
+CSNModelImporterGXTTreegridVisitor >> initialize [
 	super initialize.
-	prefix := 'grid:'.
+	prefix := 'treegrid:'.
 ]
 
 { #category : #visitor }
-CSNModelImporterGXTGridVisitor >> visit: anElement [
+CSNModelImporterGXTTreegridVisitor >> visit: anElement [
 	^ anElement accept: self
 ]
 
 { #category : #visitor }
-CSNModelImporterGXTGridVisitor >> visitCSNUITable: aCSNUITable [
-	^ source name = (self prefix , 'Grid')
+CSNModelImporterGXTTreegridVisitor >> visitCSNUITable: aCSNUITable [
+	^ source name = (self prefix , 'TreeGrid')
 		ifTrue: [ self createWidget: aCSNUITable for: source ]
 		ifFalse: [ nil ]
 ]
