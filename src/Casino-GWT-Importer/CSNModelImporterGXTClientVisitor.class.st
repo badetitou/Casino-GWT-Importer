@@ -23,6 +23,11 @@ CSNModelImporterGXTClientVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTClientVisitor >> visitCSNUIModal: aCSNUIModal [
+	^ source name = 'modal' ifTrue: [ self createAttribute: aCSNUIModal for: source ] ifFalse: [ ^ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUIPanel: aCSNUIPanel [
 	^ (self prefix , 'ContentPanel') = source name ifTrue: [ self createWidget: aCSNUIPanel for: source ] ifFalse: [ nil ]
 ]
