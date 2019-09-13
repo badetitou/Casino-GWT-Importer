@@ -14,3 +14,10 @@ CSNModelImporterGWTUIBinderVisitor >> initialize [
 CSNModelImporterGWTUIBinderVisitor >> visit: anElement [
 	^ anElement accept: self
 ]
+
+{ #category : #visitor }
+CSNModelImporterGWTUIBinderVisitor >> visitCSNLeaf: aCSNLeaf [
+	^ (({(self prefix , 'with'). (self prefix , 'UiBinder')}) includes: source name)
+		ifTrue: [ ^ CSNDummyLeaf new ]
+		ifFalse: [ ^ nil ]
+]

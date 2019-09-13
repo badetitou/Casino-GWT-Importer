@@ -34,6 +34,7 @@ CSNXMLGWTVisitor >> visitDocument: aDocument [
 CSNXMLGWTVisitor >> visitElement: anElement [
 	| widget |
 	self parentWidget ifNil: [ widget := self factory createWidgetFor: anElement ] ifNotNil: [ widget := self factory createWidgetFor: anElement withParent: self parentWidget ].
+	(widget isKindOf: CSNDummyLeaf) ifTrue: [ ^ self ].
 	widget isDummy
 		ifTrue: [ "In case of dummy, we keep the old parent as the previous one" widget := self parentWidget ]
 		ifFalse: [ self parentWidget isContainer ifTrue: [ (widget isKindOf: CSNLLayout) ifFalse: [ "ifTrue, already done by construction" self parentWidget addWidgets: widget ] ].
