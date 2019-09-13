@@ -17,7 +17,15 @@ CSNModelImporterGXTButtonVisitor >> visit: anElement [
 
 { #category : #visitor }
 CSNModelImporterGXTButtonVisitor >> visitCSNUIButton: aCSNUIButton [
-	^ source name = (self prefix , 'TextButton') ifTrue: [ self createWidget: aCSNUIButton for: source ] ifFalse: [ ^ nil ]
+	^ source name = (self prefix , 'TextButton')
+		ifTrue: [ | widget |
+			source hasElements
+				ifTrue: [ widget := (self createWidget: CSNUIDropdownButton for: source)
+						addSource: source firstElement;
+						yourself ]
+				ifFalse: [ widget := self createWidget: aCSNUIButton for: source ].
+			widget ]
+		ifFalse: [ ^ nil ]
 ]
 
 { #category : #visitor }
@@ -32,7 +40,9 @@ CSNModelImporterGXTButtonVisitor >> visitCSNUIDisabled: aCSNUIDisabled [
 
 { #category : #visitor }
 CSNModelImporterGXTButtonVisitor >> visitCSNUIDropdownButton: aCSNUIDropdownButton [
-	^ source name = (self prefix , 'menu') ifTrue: [ self createWidget: aCSNUIDropdownButton for: source ] ifFalse: [ ^ nil ]
+	"already done in TextButton
+	only ignore this step with a dummy container"
+	^ source name = (self prefix , 'menu') ifTrue: [ CSNDummyContainer new"self createWidget: aCSNUIDropdownButton for: source" ] ifFalse: [ ^ nil ]
 ]
 
 { #category : #visitor }
