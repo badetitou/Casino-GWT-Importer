@@ -54,7 +54,7 @@ CSNModelImporterGXTClientVisitor >> visitCSNUISize: aCSNUISize [
 
 { #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUITab: aCSNUITab [
-	^ (self prefix , 'PlainTabPanel') = source name ifTrue: [ self createWidget: aCSNUITab for: source ] ifFalse: [ nil ]
+	^ ({(self prefix , 'PlainTabPanel') . (self prefix , 'TabPanel')} includes: source name) ifTrue: [ self createWidget: aCSNUITab for: source ] ifFalse: [ nil ]
 ]
 
 { #category : #visitor }
