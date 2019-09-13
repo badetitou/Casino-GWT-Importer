@@ -51,6 +51,11 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIInputDate: aCSNUIInputDate [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTFormVisitor >> visitCSNUIInputEmail: aCSNUIInputEmail [
+	^ nil
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTFormVisitor >> visitCSNUIInputFile:  aCSNUIInputFile [
 	^ source name = (self prefix , 'FileUploadField')
 		ifTrue: [ self createWidget: aCSNUIInputFile for: source ]
@@ -65,9 +70,9 @@ CSNModelImporterGXTFormVisitor >> visitCSNUIInputNumber: aCSNUIInputNumber [
 ]
 
 { #category : #visitor }
-CSNModelImporterGXTFormVisitor >> visitCSNUIInputPassword: aCSNInputPassword [
+CSNModelImporterGXTFormVisitor >> visitCSNUIInputPassword: aCSNUIInputPassword [
 	^ source name = (self prefix , 'PasswordField')
-		ifTrue: [ self createWidget: aCSNInputPassword for: source ]
+		ifTrue: [ self createWidget: aCSNUIInputPassword for: source ]
 		ifFalse: [ nil ]
 ]
 

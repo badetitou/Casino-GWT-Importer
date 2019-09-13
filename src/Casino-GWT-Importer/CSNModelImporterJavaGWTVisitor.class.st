@@ -26,5 +26,10 @@ CSNModelImporterJavaGWTVisitor >> visitCSNUICWOpen: aCSOpen [
 
 { #category : #visiting }
 CSNModelImporterJavaGWTVisitor >> visitCSNUIDisabled: aCSNUIDisabled [
-	^ (source isInvocation and: [ source attributeName = 'enabled' ]) ifTrue: [ self createAttribute: aCSNUIDisabled for: source ] ifFalse: [ nil ]
+	^ (source isInvocation and: [ source attributeName = 'enabled' ])
+		ifTrue: [ | disable |
+			disable := self createAttribute: aCSNUIDisabled for: source.
+			disable attributeValue = 'false' ifTrue: [ disable disabled: true ] ifFalse: [ disable disabled: false ].
+			disable ]
+		ifFalse: [ nil ]
 ]
