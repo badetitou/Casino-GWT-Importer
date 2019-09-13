@@ -45,16 +45,9 @@ CSNGWTImporter >> createFactory [
 		model: model;
 		importer: self;
 		addVisitorImporter: CSNModelImporterHTMLVisitor new;
-		addVisitorImporter: CSNModelImporterGWTClientVisitor new;
-		addVisitorImporter: CSNModelImporterGWTUIBinderVisitor new;
-		addVisitorImporter: CSNModelImporterGXTButtonVisitor new;
-		addVisitorImporter: CSNModelImporterGXTClientVisitor new;
-		addVisitorImporter: CSNModelImporterGXTContainerVisitor new;
-		addVisitorImporter: CSNModelImporterGXTFormVisitor new;
-		addVisitorImporter: CSNModelImporterGXTGridVisitor new;
-		addVisitorImporter: CSNModelImporterGXTTreegridVisitor new;
-		addVisitorImporter: CSNModelImporterGXTToolbarVisitor new;
 		yourself.
+	CSNModelImporterAbstractGWTVisitor subclassesDo: [ :visitorSubclass | 
+		factory addVisitorImporter: visitorSubclass new ].
 	javaFactory := self javaFactoryClass new
 		model: model;
 		importer: self;

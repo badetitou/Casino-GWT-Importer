@@ -31,6 +31,11 @@ CSNModelImporterGXTButtonVisitor >> visitCSNUIDisabled: aCSNUIDisabled [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTButtonVisitor >> visitCSNUIDropdownButton: aCSNUIDropdownButton [
+	^ source name = (self prefix , 'menu') ifTrue: [ self createWidget: aCSNUIDropdownButton for: source ] ifFalse: [ ^ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTButtonVisitor >> visitCSNUILabel: aCSNUILabel [
 	^ (source name = 'text') ifTrue: [ self createAttribute: aCSNUILabel for: source ] ifFalse: [ nil ]
 ]
