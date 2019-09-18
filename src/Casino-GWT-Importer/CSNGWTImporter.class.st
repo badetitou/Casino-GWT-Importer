@@ -135,8 +135,8 @@ CSNGWTImporter >> javaFactoryClass [
 
 { #category : #'private - linkWidget' }
 CSNGWTImporter >> linkCustomWidget: widget [
-	| possibleClasses invocations methodAST possibleMethods possibleNewExpressions positionArguments possibleNewExpressionsToInvoc possibleAttributes |
-	"widget sources iterator
+	| invocations possibleMethods positionArguments possibleNewExpressionsToInvoc possibleAttributes |
+"	[invocations := widget sources iterator
 		| [ :source | source isKindOf: FAMIXClass ] selectIt 
 		| [ :source | source incomingInvocations ] collectIt
 		| FlattenIterator
@@ -144,12 +144,11 @@ CSNGWTImporter >> linkCustomWidget: widget [
 		| #from collectIt
 		| #incomingInvocations collectIt
 		| FlattenIterator
-		> Array "
+		> Array] bench.	"
 	invocations := (((widget sources select: [ :source | source isKindOf: FAMIXClass ]) flatCollect: [ :source | source incomingInvocations ])
 		select: [ :invocation | invocation signature = 'getView()' ]
 		thenCollect: #from) flatCollect: #incomingInvocations.
-
-	methodAST := invocations collect: [ :invoc | invoc from generateFastIfNotDoneAndBind ].
+	invocations do: [ :invoc | invoc from generateFastIfNotDoneAndBind ].
 
 	possibleNewExpressionsToInvoc := invocations collect: [ :invoc | (invoc fast atScope: FASTJavaNewExpression) first -> invoc ].
 	positionArguments := possibleNewExpressionsToInvoc collect: [ :newExpressionToInvoc | newExpressionToInvoc key arguments asOrderedCollection indexOf: newExpressionToInvoc value fast ].
@@ -166,10 +165,7 @@ CSNGWTImporter >> linkCustomWidget: widget [
 	(self model allWithSubTypesOf: CSNContainer)
 		detect: [ :container | container sources includesAny: possibleAttributes ]
 		ifFound: [ :founded | founded addWidget: widget ]
-		ifNone: [ "widget sources iterator
-		| [ :source | source isKindOf: FAMIXClass ] selectIt 
-		| [ :source | source incomingInvocations ] collectIt
-		> Array ." ]
+		ifNone: [  ]
 ]
 
 { #category : #'private - linkWidget' }
