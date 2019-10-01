@@ -26,7 +26,7 @@ CSNModelImporterGXTClientVisitor >> visitCSNAttribute: aCSNAttribute [
 
 { #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUIButton: aCSNUIButton [
-	^ source name = (self prefix , 'button') ifTrue: [ self createWidget: aCSNUIButton for: source ] ifFalse: [ ^ nil ]
+	^ source name = (self prefix , 'button') ifTrue: [ self createWidget: CSNDummyContainer for: source ] ifFalse: [ ^ nil ]
 ]
 
 { #category : #visitor }
