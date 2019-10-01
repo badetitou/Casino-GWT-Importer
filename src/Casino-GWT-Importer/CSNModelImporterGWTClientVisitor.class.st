@@ -14,3 +14,8 @@ CSNModelImporterGWTClientVisitor >> initialize [
 CSNModelImporterGWTClientVisitor >> visit: anElement [
 	^ anElement accept: self
 ]
+
+{ #category : #visitor }
+CSNModelImporterGWTClientVisitor >> visitCSNUIParagraph: aCSNUIParagraph [
+	^ source name = (self prefix , 'Label') ifTrue: [ self createWidget: aCSNUIParagraph for: source ] ifFalse: [ nil ]
+]
