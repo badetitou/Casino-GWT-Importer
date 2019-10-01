@@ -25,6 +25,11 @@ CSNModelImporterGXTClientVisitor >> visitCSNAttribute: aCSNAttribute [
 ]
 
 { #category : #visitor }
+CSNModelImporterGXTClientVisitor >> visitCSNUIButton: aCSNUIButton [
+	^ source name = (self prefix , 'button') ifTrue: [ self createWidget: aCSNUIButton for: source ] ifFalse: [ ^ nil ]
+]
+
+{ #category : #visitor }
 CSNModelImporterGXTClientVisitor >> visitCSNUIFieldset: aCSNUIFieldset [
 	^ (({(self prefix , 'Window') . (self prefix , 'FramedPanel')} includes: source name) or: [ (self prefix , 'ContentPanel') = source name and: [ (source attributeAt: 'headingText') isNotEmpty ] ])
 		ifTrue: [ self createWidget: aCSNUIFieldset for: source ]
